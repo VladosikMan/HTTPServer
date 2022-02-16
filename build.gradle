@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'com.vladgad'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    runtime(
+            [group: 'org.nanohttpd', name: 'nanohttpd', version: '2.3.1'],
+    )
+}
