@@ -34,4 +34,5 @@ serverNode/node_modules
 .gradle
 .idea
 build
-
+task.txt
+notes.txt
