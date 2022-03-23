@@ -15,4 +15,6 @@ dependencies {
             [group: 'org.nanohttpd', name: 'nanohttpd', version: '2.3.1'],
     )
     implementation 'io.github.hakky54:sslcontext-kickstart:7.3.0'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk16', version: '1.45'
+    implementation 'commons-codec:commons-codec:1.15'
 }
