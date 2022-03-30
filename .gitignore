@@ -35,4 +35,5 @@ serverNode/node_modules
 .idea
 build
 task.txt
+cert
 notes.txt
