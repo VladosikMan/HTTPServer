@@ -68,21 +68,21 @@ public class Cryprography {
 
     }
 
-    private static void writeCrtToFile(String path, String crt) throws IOException {
+    private  void writeCrtToFile(String path, String crt) throws IOException {
         FileOutputStream outputStream = new FileOutputStream(path);
         byte[] strToBytes = crt.getBytes();
         outputStream.write(strToBytes);
         outputStream.close();
     }
 
-    private static void savePrivateKey(String key, String path) throws IOException {
+    private  void savePrivateKey(String key, String path) throws IOException {
         FileOutputStream outputStream = new FileOutputStream(path);
         byte[] strToBytes = key.getBytes();
         outputStream.write(strToBytes);
         outputStream.close();
     }
 
-    public static PrivateKey PrivateKey(File file) throws Exception {
+    public static PrivateKey readPrivateKey(File file) throws Exception {
         String key = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
 
         String privateKeyPEM = key
@@ -101,7 +101,27 @@ public class Cryprography {
         return keyFactory.generatePrivate(keySpec);
     }
 
-    private static Certificate generateX509Certificate(KeyPair keyPair) {
+    public String encrypt(PublicKey publicKey, String plaintext) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            return Base64.encodeBase64String(cipher.doFinal(plaintext.getBytes()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String decrypt(PrivateKey privateKey, String plaintext ) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            return new String(cipher.doFinal(Base64.decodeBase64(plaintext)), "UTF-8");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public  Certificate generateX509Certificate(KeyPair keyPair) {
         // generate certificat
         //генериуем создатель сертификатов
         Calendar start = new GregorianCalendar();
@@ -151,32 +171,12 @@ public class Cryprography {
     }
 
     private static String generatePrivateKeyPEM(String key) {
-        String crt = "-----BEGIN PRIVATE KEY-----" + "\n" + key + "\n-----END PRIVATE KEY-----";
+        String crt = "--Газ---BEGIN PRIVATE KEY-----" + "\n" + key + "\n-----END PRIVATE KEY-----";
         return crt;
     }
 
-    public static String encrypt(PublicKey publicKey, String plaintext, String provider) {
-        try {
-            Cipher cipher = Cipher.getInstance(provider);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            return Base64.encodeBase64String(cipher.doFinal(plaintext.getBytes()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    public static String decrypt(PrivateKey privateKey, String plaintext, String provider) {
-        try {
-            Cipher cipher = Cipher.getInstance(provider);
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            return new String(cipher.doFinal(Base64.decodeBase64(plaintext)), "UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private static Certificate getCert(InputStream inputStream) {
+    public static Certificate getCert(InputStream inputStream) {
         CertificateFactory cf = null;
         Certificate cert = null;
         try {
